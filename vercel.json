@@ -1,6 +1,6 @@
 {
     "builds": [{
-        "src": "GATECHECK FOR COER/wsgi.py",
+        "src": "config/wsgi.py",
         "use": "@vercel/python",
         "config": { "maxLambdaSize": "15mb", "runtime": "python3.12" }
     },
@@ -16,7 +16,7 @@
         },
         {
             "src": "/(.*)",
-            "dest": "GATECHECK FOR COER/wsgi.py"
+            "dest": "config/wsgi.py"
         }
     ]
 }

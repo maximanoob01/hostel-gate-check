@@ -1,5 +1,7 @@
+# Exit immediately if a command exits with a non-zero status
+set -e 
+
 echo "Building the project..."
-# Install using python3.12
 python3.12 -m pip install -r requirements.txt
 
 echo "Make Migrations..."
