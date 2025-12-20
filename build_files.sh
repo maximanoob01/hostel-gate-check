@@ -1,12 +1,17 @@
-# Exit immediately if a command exits with a non-zero status
-set -e 
-
+# build_files.sh
 echo "Building the project..."
-python3.12 -m pip install -r requirements.txt
 
-echo "Make Migrations..."
-python3.12 manage.py makemigrations --noinput
-python3.12 manage.py migrate --noinput
+# Ensure pip is up to date
+python3.9 -m pip install --upgrade pip
 
-echo "Collect Static..."
-python3.12 manage.py collectstatic --noinput --clear
+# Install dependencies
+python3.9 -m pip install -r requirements.txt
+
+# Make migrations (good practice on build)
+python3.9 manage.py makemigrations
+python3.9 manage.py migrate
+
+# Collect static files
+python3.9 manage.py collectstatic --noinput --clear
+
+echo "Build End"

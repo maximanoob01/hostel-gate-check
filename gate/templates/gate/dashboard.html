@@ -1,4 +1,5 @@
 {% extends "gate/base.html" %}
+
 {% block title %}Dashboard · GateCheck{% endblock %}
 {% block content %}
 <style>
@@ -33,12 +34,14 @@
     <a class="btn purple" href="{% url 'check' %}">Check / Toggle</a>
     <a class="btn blue" href="{% url 'logs' %}">View Logs</a>
 
-    {% if user.has_perm 'gate.view_student' %}
+    <!-- Fixed permission check syntax -->
+    {% if perms.gate.view_student %}
       <a class="btn orange" href="{% url 'inside' %}">Inside List</a>
       <a class="btn orange" href="{% url 'outside' %}">Outside List</a>
     {% endif %}
 
-    {% if user.has_perm 'gate.add_student' %}
+    <!-- Fixed permission check syntax -->
+    {% if perms.gate.add_student %}
       <a class="btn green" href="{% url 'add_student' %}">Add Student</a>
       <a class="btn green" href="{% url 'import_students_csv' %}">Import CSV</a>
     {% endif %}

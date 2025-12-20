@@ -1,298 +1,213 @@
 {% extends "gate/base.html" %}
-{% block title %}Add Student · Hostel Gate Check{% endblock %}
+{% block title %}Add Student | GateCheck{% endblock %}
 
 {% block content %}
-<style>
-  :root {
-    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    --glass-bg: rgba(255, 255, 255, 0.95);
-    --input-bg: #f7fafc;
-    --input-border: #e2e8f0;
-    --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.15);
-  }
+<script src="https://cdn.tailwindcss.com"></script>
 
-  * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-
-  .page-bg {
-    background: var(--primary-gradient);
-    min-height: calc(100vh - 80px);
-    padding: 60px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .container {
-    max-width: 700px;
-    width: 100%;
-    animation: slideUp 0.5s ease-out;
-  }
-
-  @keyframes slideUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .header {
-    text-align: center;
-    margin-bottom: 35px;
-  }
-
-  .title {
-    color: #fff;
-    font-size: 2.5rem;
-    font-weight: 800;
-    margin-bottom: 8px;
-    text-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  }
-
-  .subtitle {
-    color: rgba(255, 255, 255, 0.9);
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-
-  .card {
-    background: var(--glass-bg);
-    border-radius: 24px;
-    padding: 40px;
-    box-shadow: var(--shadow-soft);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-  }
-
-  /* --- Avatar / Preview Only Section --- */
-  .avatar-section {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 30px;
-  }
-
-  .avatar-preview {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background: #edf2f7;
-    border: 5px solid #fff;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
-
-  .avatar-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .placeholder-icon {
-    font-size: 3rem;
-    color: #cbd5e0;
-  }
-
-  /* --- Form Styling --- */
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .form-group.full { grid-column: 1 / -1; }
-
-  label {
-    font-weight: 700;
-    color: #4a5568;
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  input[type="text"],
-  input[type="tel"],
-  select {
-    width: 100%;
-    padding: 14px 18px;
-    border: 2px solid var(--input-border);
-    border-radius: 12px;
-    font-size: 1rem;
-    background: var(--input-bg);
-    color: #2d3748;
-    transition: all 0.2s;
-  }
-
-  input:focus, select:focus {
-    outline: none;
-    background: #fff;
-    border-color: #667eea;
-    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
-    transform: translateY(-1px);
-  }
-
-  .error-message {
-    color: #e53e3e;
-    font-size: 0.85rem;
-    margin-top: 6px;
-    font-weight: 600;
-  }
-
-  .save-btn {
-    width: 100%;
-    margin-top: 30px;
-    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-    color: #fff;
-    border: none;
-    padding: 16px;
-    border-radius: 14px;
-    font-weight: 700;
-    font-size: 1.1rem;
-    cursor: pointer;
-    box-shadow: 0 10px 20px rgba(72, 187, 120, 0.25);
-    transition: all 0.2s;
-  }
-
-  .save-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(72, 187, 120, 0.35);
-  }
-
-  .footer-links {
-    margin-top: 30px;
-    padding-top: 25px;
-    border-top: 2px solid #edf2f7;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-  }
-
-  .sub-link {
-    color: #718096;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
-    padding: 8px 16px;
-    border-radius: 8px;
-    transition: all 0.2s;
-  }
-
-  .sub-link:hover {
-    background: #f7fafc;
-    color: #667eea;
-  }
-
-  .back-home {
-    text-align: center;
-    margin-top: 25px;
-  }
-  .back-home a {
-    color: rgba(255,255,255,0.8);
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.2s;
-  }
-  .back-home a:hover { color: #fff; }
-
-  @media (max-width: 600px) {
-    .page-bg { padding: 30px 15px; }
-    .card { padding: 25px; }
-    .form-grid { grid-template-columns: 1fr; }
-    .title { font-size: 2rem; }
-  }
-</style>
-
-<div class="page-bg">
-  <div class="container">
-    <div class="header">
-      <h1 class="title">New Registration</h1>
-      <p class="subtitle">Add student details to the system</p>
-    </div>
-
-    <div class="card">
-      <form method="post">
-        {% csrf_token %}
-
-        {% if form.non_field_errors %}
-          <div class="error-message" style="margin-bottom: 25px; padding: 15px; background: #fff5f5; border-left: 4px solid #fc8181; border-radius: 8px;">
-            {{ form.non_field_errors }}
-          </div>
-        {% endif %}
-
-        <div class="avatar-section">
-          <div class="avatar-preview">
-            {% if form.instance and form.instance.photo %}
-              <img src="{{ form.instance.photo.url }}" alt="Student Photo">
-            {% else %}
-              <svg class="placeholder-icon" fill="currentColor" viewBox="0 0 24 24" width="48" height="48">
-                <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-              </svg>
-            {% endif %}
-          </div>
+<div class="min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600 py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    
+    <div class="max-w-4xl w-full space-y-8">
+        
+        <div class="text-center">
+            <h1 class="text-4xl font-extrabold text-white tracking-tight drop-shadow-md">
+                New Registration
+            </h1>
+            <p class="mt-2 text-lg text-indigo-100">
+                Register a new student into the hostel system
+            </p>
         </div>
 
-        <div class="form-grid">
-          <div class="form-group full">
-            <label for="{{ form.enrollment_number.id_for_label }}">Enrollment Number</label>
-            {{ form.enrollment_number }}
-            {% if form.enrollment_number.errors %}
-              <span class="error-message">{{ form.enrollment_number.errors }}</span>
-            {% endif %}
-          </div>
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            
+            <form method="post" enctype="multipart/form-data" class="p-8 sm:p-12">
+                {% csrf_token %}
 
-          <div class="form-group full">
-            <label for="{{ form.full_name.id_for_label }}">Full Name</label>
-            {{ form.full_name }}
-            {% if form.full_name.errors %}
-              <span class="error-message">{{ form.full_name.errors }}</span>
-            {% endif %}
-          </div>
+                {% if form.non_field_errors %}
+                <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" /></svg>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-red-700">{{ form.non_field_errors }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
 
-          <div class="form-group">
-            <label for="{{ form.room_number.id_for_label }}">Hostel Name/Room</label>
-            {{ form.room_number }}
-            {% if form.room_number.errors %}
-              <span class="error-message">{{ form.room_number.errors }}</span>
-            {% endif %}
-          </div>
+                <div class="space-y-12">
+                    
+                    <div class="flex flex-col items-center justify-center border-b border-gray-200 pb-10">
+                        <div class="relative group">
+                            <div class="h-32 w-32 rounded-full ring-4 ring-indigo-50 overflow-hidden bg-gray-100 flex items-center justify-center shadow-lg">
+                                <img id="avatar-preview" 
+                                     src="{% if form.instance.photo %}{{ form.instance.photo.url }}{% else %}https://via.placeholder.com/150?text=No+Img{% endif %}" 
+                                     alt="Student Photo" 
+                                     class="h-full w-full object-cover {% if not form.instance.photo %}opacity-50{% endif %}">
+                            </div>
+                            
+                            <div class="mt-4 flex flex-col items-center">
+                                <label for="{{ form.photo.id_for_label }}" class="cursor-pointer inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                                    <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                    Upload Photo
+                                </label>
+                                {{ form.photo }}
+                                {% if form.photo.errors %}
+                                    <p class="mt-2 text-sm text-red-600">{{ form.photo.errors.0 }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
 
-          <div class="form-group">
-            <label for="{{ form.phone.id_for_label }}">Phone Number</label>
-            {{ form.phone }}
-            {% if form.phone.errors %}
-              <span class="error-message">{{ form.phone.errors }}</span>
-            {% endif %}
-          </div>
+                    <div>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4 flex items-center gap-2">
+                            👤 Personal Information
+                        </h3>
+                        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                            
+                            <div class="col-span-1">
+                                <label for="{{ form.enrollment_number.id_for_label }}" class="block text-sm font-medium text-gray-700">Enrollment Number</label>
+                                <div class="mt-1">
+                                    {{ form.enrollment_number }}
+                                </div>
+                                {% if form.enrollment_number.errors %}<p class="mt-1 text-sm text-red-600">{{ form.enrollment_number.errors.0 }}</p>{% endif %}
+                            </div>
 
-          <div class="form-group full">
-            <label for="{{ form.is_inside.id_for_label }}">Current Status</label>
-            {{ form.is_inside }}
-            {% if form.is_inside.errors %}
-              <span class="error-message">{{ form.is_inside.errors }}</span>
-            {% endif %}
-          </div>
+                            <div class="col-span-1">
+                                <label for="{{ form.full_name.id_for_label }}" class="block text-sm font-medium text-gray-700">Full Name</label>
+                                <div class="mt-1">
+                                    {{ form.full_name }}
+                                </div>
+                                {% if form.full_name.errors %}<p class="mt-1 text-sm text-red-600">{{ form.full_name.errors.0 }}</p>{% endif %}
+                            </div>
+
+                            <div class="col-span-1">
+                                <label for="{{ form.course.id_for_label }}" class="block text-sm font-medium text-gray-700">Course / Branch</label>
+                                <div class="mt-1">
+                                    {{ form.course }}
+                                </div>
+                                {% if form.course.errors %}<p class="mt-1 text-sm text-red-600">{{ form.course.errors.0 }}</p>{% endif %}
+                            </div>
+
+                             <div class="col-span-1">
+                                <label for="{{ form.year.id_for_label }}" class="block text-sm font-medium text-gray-700">Current Year</label>
+                                <div class="mt-1">
+                                    {{ form.year }}
+                                </div>
+                                {% if form.year.errors %}<p class="mt-1 text-sm text-red-600">{{ form.year.errors.0 }}</p>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4 flex items-center gap-2">
+                            🏠 Hostel & Contact
+                        </h3>
+                        <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+                            
+                            <div class="col-span-1">
+                                <label for="{{ form.room_number.id_for_label }}" class="block text-sm font-medium text-gray-700">Hostel & Room No.</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">🏢</span>
+                                    </div>
+                                    <div class="relative">
+                                        {{ form.room_number }}
+                                        <style>#id_room_number { padding-left: 2.5rem; }</style>
+                                    </div>
+                                </div>
+                                {% if form.room_number.errors %}<p class="mt-1 text-sm text-red-600">{{ form.room_number.errors.0 }}</p>{% endif %}
+                            </div>
+
+                            <div class="col-span-1">
+                                <label for="{{ form.phone.id_for_label }}" class="block text-sm font-medium text-gray-700">Student Mobile</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">📞</span>
+                                    </div>
+                                    <div class="relative">
+                                        {{ form.phone }}
+                                        <style>#id_phone { padding-left: 2.5rem; }</style>
+                                    </div>
+                                </div>
+                                {% if form.phone.errors %}<p class="mt-1 text-sm text-red-600">{{ form.phone.errors.0 }}</p>{% endif %}
+                            </div>
+
+                             <div class="col-span-1">
+                                <label for="{{ form.guardian_name.id_for_label }}" class="block text-sm font-medium text-gray-700">Guardian Name</label>
+                                <div class="mt-1">
+                                    {{ form.guardian_name }}
+                                </div>
+                                {% if form.guardian_name.errors %}<p class="mt-1 text-sm text-red-600">{{ form.guardian_name.errors.0 }}</p>{% endif %}
+                            </div>
+
+                            <div class="col-span-1">
+                                <label for="{{ form.emergency_phone.id_for_label }}" class="block text-sm font-medium text-gray-700">Emergency Contact</label>
+                                <div class="mt-1 relative rounded-md shadow-sm">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">🚨</span>
+                                    </div>
+                                    <div class="relative">
+                                        {{ form.emergency_phone }}
+                                        <style>#id_emergency_phone { padding-left: 2.5rem; }</style>
+                                    </div>
+                                </div>
+                                {% if form.emergency_phone.errors %}<p class="mt-1 text-sm text-red-600">{{ form.emergency_phone.errors.0 }}</p>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                {{ form.is_inside }}
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="{{ form.is_inside.id_for_label }}" class="font-medium text-gray-700">Student is currently Inside?</label>
+                                <p class="text-gray-500">Uncheck if adding a student who is currently outside the campus.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="mt-10 pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-4">
+                    <button type="submit" class="flex-1 flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all transform hover:-translate-y-0.5">
+                        💾 Save Student Record
+                    </button>
+                    <a href="{% url 'home' %}" class="flex-1 flex justify-center py-3 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+                        Cancel
+                    </a>
+                </div>
+
+                <div class="mt-8 flex justify-center space-x-6 text-sm text-gray-500">
+                    <a href="{% url 'import_students_csv' %}" class="hover:text-indigo-600 flex items-center gap-1">📂 Import CSV</a>
+                    <span>|</span>
+                    <a href="{% url 'inside' %}" class="hover:text-indigo-600">View Inside</a>
+                    <span>|</span>
+                    <a href="{% url 'outside' %}" class="hover:text-indigo-600">View Outside</a>
+                </div>
+            </form>
         </div>
-
-        <button type="submit" class="save-btn">Save Student Record</button>
-
-        <div class="footer-links">
-          <a class="sub-link" href="{% url 'import_students_csv' %}">Import CSV</a>
-          <a class="sub-link" href="{% url 'inside' %}">Inside List</a>
-          <a class="sub-link" href="{% url 'outside' %}">Outside List</a>
+        
+        <div class="text-center">
+            <a href="{% url 'home' %}" class="text-indigo-100 hover:text-white font-medium transition-colors">← Back to Dashboard</a>
         </div>
-      </form>
     </div>
-
-    <div class="back-home">
-      <a href="{% url 'home' %}">← Back to Dashboard</a>
-    </div>
-  </div>
 </div>
+
+<script>
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const output = document.getElementById('avatar-preview');
+            output.src = reader.result;
+            output.classList.remove('opacity-50');
+        }
+        if(event.target.files[0]) {
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    }
+</script>
+
 {% endblock %}

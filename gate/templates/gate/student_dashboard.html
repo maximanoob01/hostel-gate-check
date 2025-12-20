@@ -1,0 +1,550 @@
+{% extends "gate/base.html" %}
+
+{% block title %}Student Dashboard | GateCheck{% endblock %}
+
+{% block content %}
+<style>
+  /* ================= GLOBALS & VARS ================= */
+  :root {
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --teal: #0d9488;
+    --teal-hover: #0f766e;
+    --danger: #ef4444;
+    --bg-app: #f8fafc;
+    --bg-card: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-light: #e2e8f0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+  }
+
+  body {
+    background-color: var(--bg-app);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: var(--text-main);
+  }
+
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  /* ================= HEADER ================= */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .header-text h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--text-main);
+    margin: 0;
+    letter-spacing: -0.025em;
+  }
+  
+  .header-text p {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-top: 8px;
+  }
+
+  /* ================= STATUS BADGE ================= */
+  .status-badge-large {
+    padding: 10px 20px;
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s;
+  }
+  
+  .status-badge-large:hover {
+    transform: translateY(-2px);
+  }
+
+  .status-inside {
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+  }
+
+  .status-outside {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+  }
+
+  /* ================= BANNERS ================= */
+  .active-pass-banner {
+    background: linear-gradient(135deg, var(--primary) 0%, #3b82f6 100%);
+    border-radius: 16px;
+    padding: 30px;
+    color: white;
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.25);
+    margin-bottom: 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .banner-alert {
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+    box-shadow: 0 20px 25px -5px rgba(239, 68, 68, 0.25);
+  }
+
+  .watermark {
+    position: absolute;
+    right: -20px;
+    bottom: -30px;
+    font-size: 6rem;
+    font-weight: 900;
+    opacity: 0.1;
+    transform: rotate(-10deg);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .banner-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .banner-item label {
+    display: block;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.9;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+
+  .banner-item span {
+    font-size: 1.35rem;
+    font-weight: 700;
+    display: block;
+  }
+
+  /* ================= LAYOUT ================= */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.6fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  @media (max-width: 960px) {
+    .main-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ================= CARD FORM ================= */
+  .card-box {
+    background: var(--bg-card);
+    border-radius: 20px;
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-light);
+  }
+  
+  /* Sticky form on desktop */
+  @media (min-width: 961px) {
+      .form-section {
+          position: sticky;
+          top: 30px;
+      }
+  }
+
+  .section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .form-group { margin-bottom: 24px; }
+  
+  .form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid var(--border-light);
+    background: #f8fafc;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    font-family: inherit;
+    box-sizing: border-box; /* Fix width issues */
+  }
+
+  .form-input:focus {
+    border-color: var(--primary);
+    background: white;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+  }
+
+  .btn-submit-leave {
+    width: 100%;
+    padding: 16px;
+    background: var(--teal);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-submit-leave:hover {
+    background: var(--teal-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(13, 148, 136, 0.3);
+  }
+
+  /* ================= HISTORY ================= */
+  .history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .request-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+    overflow: hidden;
+    transition: all 0.2s;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .request-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .card-outpass { border-left: 5px solid var(--primary); }
+  .card-leave { border-left: 5px solid var(--teal); }
+  .card-expired { border-left: 5px solid var(--text-muted); filter: grayscale(1); opacity: 0.8; }
+
+  .req-header {
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-light);
+    background: #fdfdfd;
+  }
+
+  .req-type {
+    font-weight: 800;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .text-outpass { color: var(--primary); }
+  .text-leave { color: var(--teal); }
+  .text-expired { color: var(--text-muted); }
+
+  .mini-badge {
+    font-size: 0.7rem;
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .status-pending { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
+  .status-approved { background: #f0fdf4; color: #15803d; border: 1px solid #dcfce7; }
+  .status-rejected { background: #fef2f2; color: #b91c1c; border: 1px solid #fee2e2; }
+
+  .req-body {
+    padding: 24px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .detail-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .detail-value {
+    font-size: 1rem;
+    color: var(--text-main);
+    font-weight: 600;
+  }
+
+  .full-width { grid-column: 1 / -1; }
+
+  .req-footer {
+    padding: 12px 24px;
+    background: #f8fafc;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .rejection-box {
+    margin: 0 24px 24px 24px;
+    background: #fef2f2;
+    border: 1px dashed #f87171;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #991b1b;
+    display: flex;
+    gap: 10px;
+  }
+  
+  /* Empty State */
+  .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+      background: white;
+      border-radius: 20px;
+      border: 1px dashed var(--border-light);
+  }
+  .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+      opacity: 0.5;
+  }
+</style>
+
+<div class="dashboard-container">
+  
+  <div class="dashboard-header">
+    <div class="header-text">
+      <h2>Welcome back, {{ student.first_name }} 👋</h2>
+      <p>Manage your campus movement and leave requests.</p>
+    </div>
+    
+    <div class="status-badge-large {% if student.is_inside %}status-inside{% else %}status-outside{% endif %}">
+      {% if student.is_inside %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <span>Inside Campus</span>
+      {% else %}
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        <span>Outside Campus</span>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if active_outpass %}
+  <div class="active-pass-banner">
+    <div class="watermark">ACTIVE</div>
+    <div class="banner-grid">
+      <div class="banner-item">
+        <label>Destination</label>
+        <span>📍 {{ active_outpass.destination }}</span>
+      </div>
+      <div class="banner-item">
+        <label>Return By</label>
+        <span>⏰ {{ active_outpass.to_date|date:"h:i A" }}</span>
+      </div>
+      <div class="banner-item">
+        <label>Reason</label>
+        <span>📝 {{ active_outpass.reason }}</span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  
+  {% if expired_outpass %}
+  <div class="active-pass-banner banner-alert">
+    <div class="watermark">LATE</div>
+    <div class="banner-grid">
+      <div class="banner-item">
+        <label>Alert</label>
+        <span>⚠️ Outpass Expired</span>
+      </div>
+      <div class="banner-item">
+        <label>Action Required</label>
+        <span>Report to Warden Immediately</span>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="main-grid">
+    
+    <div class="form-section">
+      <div class="card-box">
+        <div class="section-title">
+          <span>📮</span> Apply for Leave / Outpass
+        </div>
+        
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="form-group">
+            <label>Reason for Movement</label>
+            <textarea name="reason" class="form-input" rows="3" placeholder="e.g. Going home for festival / Medical emergency" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Destination Address</label>
+            <input type="text" name="destination" class="form-input" placeholder="City / Address" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="form-group">
+              <label>From Date</label>
+              <input type="date" name="from_date" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label>To Date</label>
+              <input type="date" name="to_date" class="form-input" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit-leave">
+            Submit Request 
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="history-section">
+      <div class="section-title">
+        <span>📜</span> Recent History (Last 2 Days)
+      </div>
+
+      {% if recent_requests %}
+      <div class="history-list">
+        {% for request in recent_requests %}
+
+          {%  if request.request_type == 'Outpass' and request.to_date < now %}
+              <div class="request-card card-expired">
+          {% elif request.request_type == 'Outpass' %}
+             <div class="request-card card-outpass">
+          {% else %}
+             <div class="request-card card-leave">
+          {% endif %}
+
+            <div class="req-header">
+              <div class="req-type 
+                  {% if request.request_type == 'Outpass' and request.to_date < now %}text-expired
+                  {% elif request.request_type == 'Outpass' %}text-outpass
+                  {% else %}text-leave{% endif %}">
+                
+                {% if request.request_type == 'Leave' %}
+                  🟣 LEAVE REQUEST
+                {% else %}
+                  🔵 OUTPASS
+                {% endif %}
+              </div>
+
+              <div class="mini-badge status-{{ request.status|lower }}">
+                {{ request.status|upper }}
+              </div>
+            </div>
+
+            <div class="req-body">
+              {% if request.destination %}
+              <div class="req-detail-item">
+                <span class="detail-label">📍 Destination</span>
+                <span class="detail-value">{{ request.destination }}</span>
+              </div>
+              {% endif %}
+
+              <div class="req-detail-item">
+                {% if request.request_type == 'Leave' %}
+                  <span class="detail-label">🗓️ Duration</span>
+                  <span class="detail-value">
+                    {{ request.from_date|date:"d M" }} — {{ request.to_date|date:"d M Y" }}
+                  </span>
+                {% else %}
+                  <span class="detail-label">⏰ Valid Until</span>
+                  <span class="detail-value">
+                    {{ request.to_date|date:"h:i A" }}
+                    {% if request.to_date < now %}
+                      <span style="color:var(--danger); font-size:0.8em; margin-left:5px;">(Expired)</span>
+                    {% endif %}
+                  </span>
+                {% endif %}
+              </div>
+
+              <div class="req-detail-item full-width">
+                <span class="detail-label">📝 Reason</span>
+                <span class="detail-value">{{ request.reason }}</span>
+              </div>
+            </div>
+
+            {% if request.status == "rejected" and request.rejection_reason %}
+            <div class="rejection-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+              <div>
+                <strong>Admin Note:</strong> {{ request.rejection_reason }}
+              </div>
+            </div>
+            {% endif %}
+
+            <div class="req-footer">
+              <span>Applied: {{ request.created_at|date:"d M, h:i A" }}</span>
+              {% if request.approved_by %}
+                <span>Action by: {{ request.approved_by.get_full_name|default:request.approved_by.username }}</span>
+              {% endif %}
+            </div>
+
+          </div> {% endfor %}
+      </div>
+
+      {% else %}
+      <div class="empty-state">
+        <span class="empty-icon">📭</span>
+        <h3>No recent requests</h3>
+        <p>Your history for the last 48 hours will appear here.</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
