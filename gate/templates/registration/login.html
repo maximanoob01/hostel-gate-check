@@ -7,79 +7,95 @@
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
   
-  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+  body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+    background-color: #f8fafc;
+  }
 
-  /* Target Django Form Inputs */
+  /* * Custom styling for Django-rendered form inputs.
+   * We target the input tags directly since we can't easily add classes 
+   * to the Python form widgets without extra libraries.
+   */
   .login-form input {
     width: 100%;
     padding: 0.875rem 1rem;
     border-radius: 0.75rem;
     border: 1px solid #e2e8f0; /* slate-200 */
     background-color: #f8fafc; /* slate-50 */
-    transition: all 0.2s;
+    transition: all 0.2s ease-in-out;
     outline: none;
     font-size: 0.95rem;
-    color: #1e293b;
+    color: #1e293b; /* slate-800 */
+    margin-top: 0.25rem;
   }
   
+  /* Focus state for inputs */
   .login-form input:focus {
     background-color: #ffffff;
     border-color: #7c3aed; /* violet-600 */
     box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.1);
   }
 
+  /* Label styling */
   .login-form label {
     display: block;
     font-size: 0.875rem;
     font-weight: 600;
     color: #475569; /* slate-600 */
-    margin-bottom: 0.5rem;
-    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+    margin-top: 1.25rem;
+  }
+  
+  /* Remove margin from the very first label for alignment */
+  .login-form p:first-child label {
+    margin-top: 0;
   }
 </style>
 
-<div class="min-h-screen w-full flex bg-[#f8fafc]">
+<div class="min-h-screen w-full flex relative bg-slate-50">
 
-  <div class="hidden lg:flex w-1/2 bg-gradient-to-br from-violet-600 to-indigo-800 relative overflow-hidden items-center justify-center p-12">
-    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-    <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black/20"></div>
+  <div class="hidden lg:flex w-1/2 relative overflow-hidden bg-gradient-to-br from-violet-600 to-indigo-900 items-center justify-center p-16">
+    <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10 mix-blend-overlay"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/20 pointer-events-none"></div>
     
-    <div class="relative z-10 text-center text-white max-w-lg">
+    <div class="relative z-10 max-w-lg text-center">
       <div class="mb-8 flex justify-center">
-        <div class="h-24 w-24 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center border border-white/20 shadow-2xl">
-           <img src="{% static 'gate/coer.jpg' %}" alt="Logo" class="h-14 w-auto drop-shadow-lg">
+        <div class="h-28 w-28 bg-white/10 backdrop-blur-md rounded-3xl flex items-center justify-center border border-white/20 shadow-2xl shadow-indigo-900/50 transition-transform hover:scale-105 duration-500">
+           <img src="{% static 'gate/coer.jpg' %}" alt="Campus Logo" class="h-16 w-auto drop-shadow-lg rounded-lg">
         </div>
       </div>
-      <h1 class="text-5xl font-extrabold tracking-tight mb-4">GateFlow</h1>
-      <p class="text-lg text-violet-100 font-medium leading-relaxed">
-        Secure, seamless campus movement management. <br> Simplify your gate passes and leave requests.
+      <h1 class="text-5xl font-extrabold tracking-tight text-white mb-6 drop-shadow-sm">GateFlow</h1>
+      <p class="text-lg text-violet-100 font-medium leading-relaxed max-w-md mx-auto">
+        Experience secure, seamless campus movement. <br> Simplify your gate passes and leave requests in one unified platform.
       </p>
     </div>
   </div>
 
-  <div class="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 relative">
+  <div class="w-full lg:w-1/2 flex items-center justify-center p-4 sm:p-8 relative">
     
-    <div class="absolute inset-0 lg:hidden bg-gradient-to-br from-violet-50 to-slate-100 -z-10"></div>
+    <div class="absolute inset-0 lg:hidden bg-gradient-to-br from-violet-100/50 via-slate-50 to-slate-100 -z-10"></div>
 
-    <div class="w-full max-w-md bg-white p-8 sm:p-10 rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100">
+    <div class="w-full max-w-[420px] bg-white p-8 sm:p-10 rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-100 relative">
       
-      <div class="lg:hidden flex items-center gap-3 mb-8 justify-center">
-        <div class="h-10 w-10 bg-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-200">
-          <img src="{% static 'gate/logoW.png' %}" alt="Logo" class="h-6 w-auto brightness-0 invert">
+      <div class="lg:hidden flex flex-col items-center mb-8">
+        <div class="h-12 w-12 bg-violet-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-200 mb-3">
+          <img src="{% static 'gate/logoW.png' %}" alt="Logo" class="h-7 w-auto brightness-0 invert">
         </div>
-        <span class="text-2xl font-extrabold text-slate-800">GateFlow</span>
+        <span class="text-2xl font-extrabold text-slate-900 tracking-tight">GateFlow</span>
       </div>
 
-      <div class="mb-8">
-        <h2 class="text-2xl font-bold text-slate-900">Welcome back! 👋</h2>
-        <p class="text-slate-500 mt-2 text-sm">Please enter your credentials to access your dashboard.</p>
+      <div class="mb-8 text-center lg:text-left">
+        <h2 class="text-2xl font-bold text-slate-900">Welcome back 👋</h2>
+        <p class="text-slate-500 mt-2 text-sm leading-relaxed">
+          Please enter your credentials to access your dashboard.
+        </p>
       </div>
 
       {% if form.errors %}
-        <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+        <div class="mb-6 p-4 rounded-xl bg-red-50 border border-red-100 flex items-start gap-3 animate-pulse">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 flex-shrink-0 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
           </svg>
           <div class="text-sm text-red-700 font-medium">
@@ -88,35 +104,39 @@
         </div>
       {% endif %}
 
-      <form method="post" class="login-form">
+      <form method="post" class="login-form space-y-2">
         {% csrf_token %}
         
         <div>
-           <label for="id_username">Username / Enrollment ID</label>
+           <label for="id_username" class="!mt-0">Username / Enrollment ID</label>
            {{ form.username }}
         </div>
 
-        <div class="mt-4">
-           <div class="flex justify-between items-center mb-2 mt-4">
-             <label for="id_password" class="!mb-0 !mt-0">Password</label>
-             <a href="{% url 'password_reset' %}" class="text-xs font-semibold text-violet-600 hover:text-violet-700 hover:underline">
+        <div>
+           <div class="flex justify-between items-center mt-5 mb-1">
+             <label for="id_password" class="!m-0">Password</label>
+             <a href="{% url 'password_reset' %}" class="text-xs font-semibold text-violet-600 hover:text-violet-700 hover:underline tabindex='-1'">
                Forgot password?
              </a>
            </div>
            {{ form.password }}
         </div>
 
-        <button type="submit" class="w-full mt-8 bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-violet-200 transition-all transform hover:-translate-y-0.5 active:translate-y-0 flex justify-center items-center gap-2">
-          Sign In
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-          </svg>
-        </button>
+        <div class="pt-6">
+          <button type="submit" class="group w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-violet-200 hover:shadow-violet-300 transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] flex justify-center items-center gap-2">
+            <span>Sign In</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform group-hover:translate-x-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
       </form>
       
-      <p class="mt-8 text-center text-xs text-slate-400">
-        © 2025 GateFlow Campus System. All rights reserved.
-      </p>
+      <div class="mt-8 pt-6 border-t border-slate-100">
+        <p class="text-center text-xs text-slate-400 font-medium">
+          © 2025 GateFlow Campus System. All rights reserved.
+        </p>
+      </div>
 
     </div>
   </div>

@@ -11,4 +11,4 @@ staticfiles/
 venv/
 env/
 .env
-.DS_Store
+.DS_Storegit remote add origin
