@@ -1,17 +1,18 @@
 # build_files.sh
 echo "Building the project..."
 
-# Ensure pip is up to date
+# 1. Install Dependencies
 python3.9 -m pip install --upgrade pip
-
-# Install dependencies
 python3.9 -m pip install -r requirements.txt
 
-# Make migrations (good practice on build)
-python3.9 manage.py makemigrations
-python3.9 manage.py migrate
+# 2. Migrations (DISABLED for Vercel Build)
+# We disable these because Vercel build environments often lack 
+# access to DB variables, causing the build to crash. 
+# python3.9 manage.py makemigrations
+# python3.9 manage.py migrate
 
-# Collect static files
+# 3. Collect Static Files
+echo "Collecting static files..."
 python3.9 manage.py collectstatic --noinput --clear
 
 echo "Build End"
