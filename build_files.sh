@@ -1,15 +1,11 @@
-# build_files.sh
 echo "Building the project..."
 
 # 1. Install Dependencies
-python3.9 -m pip install --upgrade pip
 python3.9 -m pip install -r requirements.txt
 
-# 2. Migrations (DISABLED for Vercel Build)
-# We disable these because Vercel build environments often lack 
-# access to DB variables, causing the build to crash. 
-# python3.9 manage.py makemigrations
-# python3.9 manage.py migrate
+# 2. DEBUG: List installed packages to console (so we can see if Django is there)
+echo "Checking installed packages..."
+python3.9 -m pip list
 
 # 3. Collect Static Files
 echo "Collecting static files..."
