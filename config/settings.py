@@ -16,7 +16,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# On Vercel, it is best practice to store this in "Environment Variables"
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-tnc#8&cr$6&_bmt#*4@!1fa(hekyf=@3v^wr!-f6l3r_dh9egw')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -40,7 +39,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # <--- ADDED THIS FOR VERCEL
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Vercel Static File Handler
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -72,7 +71,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-# Default to SQLite for local development
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -117,26 +115,35 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# ==========================================
+# STATIC FILES CONFIGURATION (VERCEL FIX)
+# ==========================================
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/static/'
 
-# The absolute path to the directory where collectstatic will collect static files for deployment.
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+# 1. Where Django looks for static files locally (e.g., your gate/static folder)
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
-# Config for serving static files on Vercel
+# 2. Where Vercel expects the collected files to end up
+# IMPORTANT: This must match the Output Directory setting in Vercel
+STATIC_ROOT = BASE_DIR / "staticfiles_build" / "static"
+
+# 3. WhiteNoise Storage Engine
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
+# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Session Settings
 SESSION_COOKIE_AGE = 3 * 60 * 60      # 10800 seconds
 SESSION_SAVE_EVERY_REQUEST = True     # extend on activity
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
+# Media Files
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -144,8 +151,13 @@ MEDIA_ROOT = BASE_DIR / "media"
 # AUTHENTICATION REDIRECTS
 # =========================
 
-
-
 LOGIN_REDIRECT_URL = "/post-login/"
 LOGOUT_REDIRECT_URL = "/accounts/login/"
 LOGIN_URL = "/accounts/login/"
+
+# =========================
+# TWILIO SETTINGS (Optional)
+# =========================
+TWILIO_ACCOUNT_SID = os.environ.get('TWILIO_ACCOUNT_SID', '')
+TWILIO_AUTH_TOKEN = os.environ.get('TWILIO_AUTH_TOKEN', '')
+TWILIO_WHATSAPP_NUMBER = os.environ.get('TWILIO_WHATSAPP_NUMBER', 'whatsapp:+14155238886')
