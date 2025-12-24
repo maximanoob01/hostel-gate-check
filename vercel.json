@@ -6,7 +6,7 @@
         },
         {
             "source": "/(.*)",
-            "destination": "hostel-gate-check/wsgi.py"
+            "destination": "config/wsgi.py"
         }
     ]
 }
